@@ -5,9 +5,9 @@ resource "exoscale_nlb" "webapp" {
 }
 
 resource "exoscale_nlb_service" "webapp" {
-  zone = exoscale_nlb.webapp.zone
   name = "webapp"
   description = "Webapp over HTTP"
+  zone = exoscale_nlb.webapp.zone
   nlb_id = exoscale_nlb.webapp.id
   instance_pool_id = exoscale_instance_pool.webapp.id
     protocol = "tcp"
