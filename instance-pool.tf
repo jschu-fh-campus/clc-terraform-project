@@ -8,7 +8,7 @@ resource "exoscale_instance_pool" "webapp" {
   description = "This is the instance pool for my webapp"
   zone = var.zone
   template_id = data.exoscale_compute_template.ubuntu.id
-  size = 1
+  size = 3
   service_offering = "micro"
   disk_size = 50
   user_data = file("userdata/load-generator.sh")
