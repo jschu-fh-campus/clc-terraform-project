@@ -1,13 +1,16 @@
 #!/bin/bash
 
-# script to install docker and run the load generator 
-# see also https://gist.github.com/janoszen/7ced227c54d1c9e86a9c1cbd93a451f2
+# Script to install docker and run the load generator 
+# See also https://gist.github.com/janoszen/7ced227c54d1c9e86a9c1cbd93a451f2
 
+# Exit immediatelly on failure
 set -e
 
+# Run in non-interactive mode -> apt will use default values and not ask questions
 export DEBIAN_FRONTEND=noninteractive
 
-# region Install Docker (https://docs.docker.com/engine/install/ubuntu/)
+# Install Docker (https://docs.docker.com/engine/install/ubuntu/)
+# -y -> answer yes to everything
 apt-get update
 apt-get install -y \
     apt-transport-https \
@@ -25,9 +28,6 @@ add-apt-repository \
    stable"
 apt-get update
 apt-get install -y docker-ce docker-ce-cli containerd.io
-# endregion
-
-# region Launch containers
 
 # Run the load generator (https://github.com/janoszen/http-load-generator)
 docker run -d \
@@ -35,4 +35,3 @@ docker run -d \
   -p 8080:8080 \
   janoszen/http-load-generator:1.0.1
   
-# endregion

@@ -1,10 +1,10 @@
-resource "exoscale_security_group" "webapp" {
-  name = "webapp"
+resource "exoscale_security_group" "http_and_ssh" {
+  name = "http_and_ssh"
   description = "This is the security group for my webapp"
 }
 
 resource "exoscale_security_group_rule" "http" {
-  security_group_id = exoscale_security_group.webapp.id
+  security_group_id = exoscale_security_group.http_and_ssh.id
   type = "INGRESS"
   protocol = "tcp"
   cidr = "0.0.0.0/0"
@@ -13,7 +13,7 @@ resource "exoscale_security_group_rule" "http" {
 }
 
 resource "exoscale_security_group_rule" "ssh" {
-  security_group_id = exoscale_security_group.webapp.id
+  security_group_id = exoscale_security_group.http_and_ssh.id
   type = "INGRESS"
   protocol = "tcp"
   cidr = "0.0.0.0/0"
