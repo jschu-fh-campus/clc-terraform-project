@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script to install docker and run the load generator 
+# Script to install docker and run load generator + node exporter 
 # See also https://gist.github.com/janoszen/7ced227c54d1c9e86a9c1cbd93a451f2
 
 # Exit immediatelly on failure
@@ -35,3 +35,11 @@ docker run -d \
   -p 8080:8080 \
   janoszen/http-load-generator:1.0.1
   
+# Run the node exporter (Port 9100)
+docker run -d \
+ --restart=always \
+ --net="host" \
+ --pid="host" \
+ -v "/:/host:ro,rslave" \
+ quay.io/prometheus/node-exporter \
+ --path.rootfs=/host
