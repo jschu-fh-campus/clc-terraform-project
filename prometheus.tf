@@ -8,7 +8,7 @@ resource "exoscale_compute" "prometheus" {
   state        = "Running"
   security_group_ids = [exoscale_security_group.prometheus.id]
 
-  user_data = templatefile("userdata/prometheus.sh", {
+  user_data = templatefile("userdata/prometheus-and-service-discovery.sh", {
         exoscale_key = var.exoscale_key,
         exoscale_secret = var.exoscale_secret,
         exoscale_zone = var.zone,

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script to install docker and run prometheus
+# Script to install docker and run prometheus and a static service discovery
 
 # Exit immediatelly on failure
 set -e
