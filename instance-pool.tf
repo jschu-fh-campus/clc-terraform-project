@@ -8,5 +8,5 @@ resource "exoscale_instance_pool" "instance_pool" {
   disk_size = 50
   user_data = file("userdata/load-generator.sh")
   key_pair = exoscale_ssh_keypair.johannes.name
-  security_group_ids = [exoscale_security_group.http_and_ssh.id]
+  security_group_ids = [exoscale_security_group.instance_pool.id]
 }
