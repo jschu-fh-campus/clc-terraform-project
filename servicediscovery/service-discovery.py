@@ -38,11 +38,15 @@ zone = os.getenv('EXOSCALE_ZONE')
 poolId = os.getenv('EXOSCALE_INSTANCEPOOL_ID')
 targetPort = os.getenv('TARGET_PORT')
 
-exo = exoscale.Exoscale(api_key=apiKey, api_secret=apiSecret) 
-exoZone = exo.compute.get_zone(zone)
 directory = '/srv/service-discovery'
 filename = 'config.json'
 pollingInterval = 15
+
+try:
+    exo = exoscale.Exoscale(api_key=apiKey, api_secret=apiSecret) 
+    exoZone = exo.compute.get_zone(zone)
+except:
+    exit(0)
 
 while True:
     runningInstances = getRunningInstances(exo, exoZone, poolId)
