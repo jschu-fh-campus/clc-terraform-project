@@ -12,19 +12,19 @@ export DEBIAN_FRONTEND=noninteractive
 # -y -> answer yes to everything
 apt-get update
 apt-get install -y \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    gnupg-agent \
-    software-properties-common
+  apt-transport-https \
+  ca-certificates \
+  curl \
+  gnupg-agent \
+  software-properties-common
 
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
 apt-key fingerprint 0EBFCD88
 add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-   $(lsb_release -cs) \
-   stable"
+  "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) \
+  stable"
 apt-get update
 apt-get install -y docker-ce docker-ce-cli containerd.io
 
@@ -46,19 +46,19 @@ scrape_configs:
 
 # Run prometheus
 docker run \
-    -d \
-    -p 9090:9090 \
-    -v ${config_directory}:${config_directory} \
-    -v /srv/prometheus.yml:/etc/prometheus/prometheus.yml \
-    prom/prometheus
+  -d \
+  -p 9090:9090 \
+  -v ${config_directory}:${config_directory} \
+  -v /srv/prometheus.yml:/etc/prometheus/prometheus.yml \
+  prom/prometheus
 
 # Run the service discovery 
 docker run \
-    -d \
-    -e EXOSCALE_KEY=${exoscale_key} \
-    -e EXOSCALE_SECRET=${exoscale_secret} \
-    -e EXOSCALE_ZONE=${exoscale_zone} \
-    -e EXOSCALE_INSTANCEPOOL_ID=${exoscale_instancepool_id} \
-    -e TARGET_PORT=${target_port} \
-    -v ${config_directory}:${config_directory} \
-    jschu/exoscale_service_discovery
+  -d \
+  -e EXOSCALE_KEY=${exoscale_key} \
+  -e EXOSCALE_SECRET=${exoscale_secret} \
+  -e EXOSCALE_ZONE=${exoscale_zone} \
+  -e EXOSCALE_INSTANCEPOOL_ID=${exoscale_instancepool_id} \
+  -e TARGET_PORT=${target_port} \
+  -v ${config_directory}:${config_directory} \
+  jschu/exoscale_service_discovery
