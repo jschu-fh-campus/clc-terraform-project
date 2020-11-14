@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import time
 import signal
@@ -33,8 +34,11 @@ def getRunningInstances(exo, exoZone, poolId):
     except:
         return list()
 
-def handleSignals(signum, frame):
-    exit(0)
+def signalHandler(signum, frame):
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signalHandler)
+signal.signal(signal.SIGTERM, signalHandler)
 
 apiKey = os.getenv('EXOSCALE_KEY')
 apiSecret = os.getenv('EXOSCALE_SECRET')
@@ -45,9 +49,6 @@ targetPort = os.getenv('TARGET_PORT')
 directory = '/srv/service-discovery'
 filename = 'config.json'
 pollingInterval = 15
-
-signal.signal(signal.SIGINT, handleSignals)
-signal.signal(signal.SIGTERM, handleSignals)
 
 exo = exoscale.Exoscale(api_key=apiKey, api_secret=apiSecret) 
 exoZone = exo.compute.get_zone(zone)
