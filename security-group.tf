@@ -56,12 +56,3 @@ resource "exoscale_security_group_rule" "prometheus_prometheus" {
   start_port = 9090
   end_port = 9090
 }
-
-resource "exoscale_security_group_rule" "prometheus_node_exporter" {
-  security_group_id = exoscale_security_group.prometheus.id
-  type = "INGRESS"
-  protocol = "TCP"
-  cidr = "0.0.0.0/0"
-  start_port = 9100
-  end_port = 9100
-}
