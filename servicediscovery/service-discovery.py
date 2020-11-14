@@ -27,7 +27,7 @@ def printJSONObjectToFile(directory, filename, jsonData):
 
 def getRunningInstances(exo, exoZone, poolId):
     try:
-        instancePool = exo.compute.get_instance_pool(poolId, exoZone)
+        instancePool = exo.compute.get_instance_pool(id=poolId, zone=exoZone)
         return instancePool.instances
     except:
         return list()
