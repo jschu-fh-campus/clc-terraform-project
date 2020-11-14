@@ -37,10 +37,10 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
       - targets: ['localhost:9090']
-  - job_name: 'customServers'
+  - job_name: 'runningInstances'
     file_sd_configs:
       - files:
-          - /srv/service-discovery/config.json
+          - ${config_directory}/config.json
         refresh_interval: 10s
 """ >> /srv/prometheus.yml
 
@@ -48,7 +48,7 @@ scrape_configs:
 docker run \
     -d \
     -p 9090:9090 \
-    -v /srv/service-discovery/:/service-discovery/ \
+    -v ${config_directory}:${config_directory} \
     -v /srv/prometheus.yml:/etc/prometheus/prometheus.yml \
     prom/prometheus
 
@@ -59,4 +59,6 @@ docker run \
     -e EXOSCALE_SECRET=${exoscale_secret} \
     -e EXOSCALE_ZONE=${exoscale_zone} \
     -e EXOSCALE_INSTANCEPOOL_ID=${exoscale_instancepool_id} \
+    -e TARGET_PORT=${target_port} \
+    -v ${config_directory}:${config_directory} \
     jschu/exoscale_service_discovery
