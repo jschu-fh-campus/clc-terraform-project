@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script to install docker and run prometheus and a service discovery
+# Script to install docker and run prometheus, the service discovery and grafana
 
 # Exit immediatelly on failure
 set -e
@@ -62,3 +62,9 @@ docker run \
   -e TARGET_PORT=${target_port} \
   -v ${config_directory}:${config_directory} \
   jschu/exoscale_service_discovery
+
+#Run Grafana
+docker run \
+  -d \
+  -p 3000:3000 \
+  grafana/grafana
