@@ -2,7 +2,7 @@ resource "exoscale_compute" "monitoring" {
   zone = var.zone
   display_name = "monitoring"
   template_id  = data.exoscale_compute_template.ubuntu.id
-  size         = "micro"
+  size         = "small"
   disk_size    = 50
   key_pair     = exoscale_ssh_keypair.johannes.name
   state        = "Running"
