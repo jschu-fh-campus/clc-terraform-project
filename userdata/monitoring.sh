@@ -28,6 +28,9 @@ add-apt-repository \
 apt-get update
 apt-get install -y docker-ce docker-ce-cli containerd.io
 
+# create docker network
+docker network create monitoring
+
 # create prometheus.yml on instance
 echo """
 global:
@@ -50,6 +53,8 @@ docker run \
   -p 9090:9090 \
   -v ${config_directory}:${config_directory} \
   -v /srv/prometheus.yml:/etc/prometheus/prometheus.yml \
+  --name prometheus \
+  --net=monitoring \
   prom/prometheus
 
 # Run the service discovery 
@@ -61,10 +66,28 @@ docker run \
   -e EXOSCALE_INSTANCEPOOL_ID=${exoscale_instancepool_id} \
   -e TARGET_PORT=${target_port} \
   -v ${config_directory}:${config_directory} \
+  --name service-discovery \
+  --net=monitoring \
   jschu/exoscale_service_discovery
+
+# create prometheus datasource for grafana on instance
+echo """
+apiVersion: 1
+datasources:
+- name: Prometheus
+  type: prometheus
+  access: proxy
+  orgId: 1
+  url: http://prometheus:9090
+  version: 1
+  editable: false
+""" >> /srv/datasource.yml
 
 #Run Grafana
 docker run \
   -d \
   -p 3000:3000 \
+  -v /srv/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml \
+  --name grafana \
+  --net=monitoring \
   grafana/grafana
