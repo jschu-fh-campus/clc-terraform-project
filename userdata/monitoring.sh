@@ -224,7 +224,7 @@ echo """
       \"steppedLine\": false,
       \"targets\": [
         {
-          \"expr\": \"sum by (instance) (rate(node_cpu_seconds_total{mode!=\\"idle\\"}[1m])) / sum by (instance) (rate(node_cpu_seconds_total[1m]))\",
+          \"expr\": \"sum by (instance) (rate(node_cpu_seconds_total{mode!=\\\"idle\\\"}[1m])) / sum by (instance) (rate(node_cpu_seconds_total[1m]))\",
           \"interval\": \"\",
           \"legendFormat\": \"\",
           \"queryType\": \"randomWalk\",
@@ -243,7 +243,7 @@ echo """
       \"timeFrom\": null,
       \"timeRegions\": [],
       \"timeShift\": null,
-      \"title\": \"Panel Title\",
+      \"title\": \"Prometheus\",
       \"tooltip\": {
         \"shared\": true,
         \"sort\": 0,
@@ -288,7 +288,7 @@ echo """
     \"list\": []
   },
   \"time\": {
-    \"from\": \"now-6h\",
+    \"from\": \"now-15m\",
     \"to\": \"now\"
   },
   \"timepicker\": {},
