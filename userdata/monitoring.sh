@@ -83,9 +83,9 @@ datasources:
   url: http://prometheus:9090
   version: 1
   editable: false
-""" >> /srv/datasource.yml
+""" >> /srv/grafana/provisioning/datasources/datasource.yml
 
-# create notifier for grafana on instance
+# create scale-up notifier for grafana on instance
 echo """
 notifiers:
   - name: Scale up
@@ -102,7 +102,26 @@ notifiers:
       severity: 'critical'
       uploadImage: false
       url: 'http://autoscaler:8090/up'
-""" >> /srv/notifier.yml
+""" >> /srv/grafana/provisioning/notifiers/up.yml
+
+# create scale-down notifier for grafana on instance
+echo """
+notifiers:
+  - name: Scale down
+    type: webhook
+    uid: scale-down
+    org_id: 1
+    is_default: false
+    send_reminder: true
+    disable_resolve_message: true
+    frequency: '2m'
+    settings:
+      autoResolve: true
+      httpMethod: 'POST'
+      severity: 'critical'
+      uploadImage: false
+      url: 'http://autoscaler:8090/down'
+""" >> /srv/grafana/provisioning/notifiers/down.yml
 
 # create dashboard configuration for grafana on instance
 echo """
@@ -115,7 +134,7 @@ providers:
   updateIntervalSeconds: 10
   options:
     path: /etc/grafana/dashboards
-""" >> /srv/dashboard.yml
+""" >> /srv/grafana/provisioning/dashboards/dashboard.yml
 
 # create dashboard for grafana on instance
 echo """
@@ -176,6 +195,9 @@ echo """
         \"notifications\": [
           {
             \"uid\": \"scale-up\"
+          },
+          {
+            \"uid\": \"scale-down\"
           }
         ]
       },
@@ -299,16 +321,13 @@ echo """
   \"uid\": \"2urSUP-Gk\",
   \"version\": 2
 }
-""" >> /srv/dashboard.json
+""" >> /srv/grafana/dashboards/dashboard.json
 
 #Run Grafana
 docker run \
   -d \
   -p 3000:3000 \
-  -v /srv/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml \
-  -v /srv/notifier.yml:/etc/grafana/provisioning/notifiers/notifier.yml \
-  -v /srv/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml \
-  -v /srv/dashboard.json:/etc/grafana/dashboards/dashboard.json \
+  -v /srv/grafana:/etc/grafana/ \
   --name grafana \
   --net=monitoring \
   --restart=always \
@@ -318,8 +337,7 @@ docker run \
 docker run \
   -d \
   -p 8090:8090 \
-  --name grafana \
+  --name autoscaler \
   --net=monitoring \
   --restart=always \
   quay.io/janoszen/exoscale-grafana-autoscaler
-
