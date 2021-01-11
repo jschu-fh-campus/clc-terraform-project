@@ -83,7 +83,7 @@ datasources:
   url: http://prometheus:9090
   version: 1
   editable: false
-""" >> /srv/grafana/provisioning/datasources/datasource.yml
+""" >> /srv/datasource.yml
 
 # create scale-up notifier for grafana on instance
 echo """
@@ -102,7 +102,7 @@ notifiers:
       severity: 'critical'
       uploadImage: false
       url: 'http://autoscaler:8090/up'
-""" >> /srv/grafana/provisioning/notifiers/up.yml
+""" >> /srv/scale-up.yml
 
 # create scale-down notifier for grafana on instance
 echo """
@@ -121,7 +121,7 @@ notifiers:
       severity: 'critical'
       uploadImage: false
       url: 'http://autoscaler:8090/down'
-""" >> /srv/grafana/provisioning/notifiers/down.yml
+""" >> /srv/scale-down.yml
 
 # create dashboard configuration for grafana on instance
 echo """
@@ -134,7 +134,7 @@ providers:
   updateIntervalSeconds: 10
   options:
     path: /etc/grafana/dashboards
-""" >> /srv/grafana/provisioning/dashboards/dashboard.yml
+""" >> /srv/dashboard.yml
 
 # create dashboard for grafana on instance
 echo """
@@ -155,9 +155,151 @@ echo """
   \"editable\": true,
   \"gnetId\": null,
   \"graphTooltip\": 0,
-  \"id\": 1,
   \"links\": [],
   \"panels\": [
+    {
+      \"alert\": {
+        \"alertRuleTags\": {},
+        \"conditions\": [
+          {
+            \"evaluator\": {
+              \"params\": [
+                0.2
+              ],
+              \"type\": \"lt\"
+            },
+            \"operator\": {
+              \"type\": \"and\"
+            },
+            \"query\": {
+              \"params\": [
+                \"A\",
+                \"5m\",
+                \"now\"
+              ]
+            },
+            \"reducer\": {
+              \"params\": [],
+              \"type\": \"avg\"
+            },
+            \"type\": \"query\"
+          }
+        ],
+        \"executionErrorState\": \"alerting\",
+        \"for\": \"5m\",
+        \"frequency\": \"1m\",
+        \"handler\": 1,
+        \"name\": \"Scale down\",
+        \"noDataState\": \"no_data\",
+        \"notifications\": [
+          {
+            \"uid\": \"scale-down\"
+          }
+        ]
+      },
+      \"aliasColors\": {},
+      \"bars\": false,
+      \"dashLength\": 10,
+      \"dashes\": false,
+      \"datasource\": \"Prometheus\",
+      \"fieldConfig\": {
+        \"defaults\": {
+          \"custom\": {}
+        },
+        \"overrides\": []
+      },
+      \"fill\": 1,
+      \"fillGradient\": 0,
+      \"gridPos\": {
+        \"h\": 8,
+        \"w\": 12,
+        \"x\": 0,
+        \"y\": 0
+      },
+      \"hiddenSeries\": false,
+      \"id\": 4,
+      \"legend\": {
+        \"avg\": false,
+        \"current\": false,
+        \"max\": false,
+        \"min\": false,
+        \"show\": true,
+        \"total\": false,
+        \"values\": false
+      },
+      \"lines\": true,
+      \"linewidth\": 1,
+      \"nullPointMode\": \"null\",
+      \"options\": {
+        \"alertThreshold\": true
+      },
+      \"percentage\": false,
+      \"pluginVersion\": \"7.3.6\",
+      \"pointradius\": 2,
+      \"points\": false,
+      \"renderer\": \"flot\",
+      \"seriesOverrides\": [],
+      \"spaceLength\": 10,
+      \"stack\": false,
+      \"steppedLine\": false,
+      \"targets\": [
+        {
+          \"expr\": \"sum by (instance) (rate(node_cpu_seconds_total{mode!=\\\"idle\\\"}[1m])) / sum by (instance) (rate(node_cpu_seconds_total[1m]))\",
+          \"interval\": \"\",
+          \"legendFormat\": \"\",
+          \"queryType\": \"randomWalk\",
+          \"refId\": \"A\"
+        }
+      ],
+      \"thresholds\": [
+        {
+          \"colorMode\": \"critical\",
+          \"fill\": true,
+          \"line\": true,
+          \"op\": \"lt\",
+          \"value\": 0.2
+        }
+      ],
+      \"timeFrom\": null,
+      \"timeRegions\": [],
+      \"timeShift\": null,
+      \"title\": \"Scale down\",
+      \"tooltip\": {
+        \"shared\": true,
+        \"sort\": 0,
+        \"value_type\": \"individual\"
+      },
+      \"type\": \"graph\",
+      \"xaxis\": {
+        \"buckets\": null,
+        \"mode\": \"time\",
+        \"name\": null,
+        \"show\": true,
+        \"values\": []
+      },
+      \"yaxes\": [
+        {
+          \"format\": \"short\",
+          \"label\": null,
+          \"logBase\": 1,
+          \"max\": null,
+          \"min\": null,
+          \"show\": true
+        },
+        {
+          \"format\": \"short\",
+          \"label\": null,
+          \"logBase\": 1,
+          \"max\": null,
+          \"min\": null,
+          \"show\": true
+        }
+      ],
+      \"yaxis\": {
+        \"align\": false,
+        \"alignLevel\": null
+      }
+    },
     {
       \"alert\": {
         \"alertRuleTags\": {},
@@ -190,14 +332,11 @@ echo """
         \"for\": \"5m\",
         \"frequency\": \"1m\",
         \"handler\": 1,
-        \"name\": \"CPU usage\",
+        \"name\": \"Scale up\",
         \"noDataState\": \"no_data\",
         \"notifications\": [
           {
             \"uid\": \"scale-up\"
-          },
-          {
-            \"uid\": \"scale-down\"
           }
         ]
       },
@@ -218,7 +357,7 @@ echo """
         \"h\": 9,
         \"w\": 12,
         \"x\": 0,
-        \"y\": 0
+        \"y\": 8
       },
       \"hiddenSeries\": false,
       \"id\": 2,
@@ -267,7 +406,7 @@ echo """
       \"timeFrom\": null,
       \"timeRegions\": [],
       \"timeShift\": null,
-      \"title\": \"Prometheus\",
+      \"title\": \"Scale up\",
       \"tooltip\": {
         \"shared\": true,
         \"sort\": 0,
@@ -319,19 +458,9 @@ echo """
   \"timezone\": \"\",
   \"title\": \"CPU usage\",
   \"uid\": \"2urSUP-Gk\",
-  \"version\": 2
+  \"version\": 1
 }
-""" >> /srv/grafana/dashboards/dashboard.json
-
-#Run Grafana
-docker run \
-  -d \
-  -p 3000:3000 \
-  -v /srv/grafana:/etc/grafana/ \
-  --name grafana \
-  --net=monitoring \
-  --restart=always \
-  grafana/grafana
+""" >> /srv/dashboard.json
 
 #Run Autoscaler
 docker run \
@@ -340,4 +469,22 @@ docker run \
   --name autoscaler \
   --net=monitoring \
   --restart=always \
-  quay.io/janoszen/exoscale-grafana-autoscaler
+  quay.io/janoszen/exoscale-grafana-autoscaler \
+  --exoscale-api-key ${exoscale_key} \
+  --exoscale-api-secret ${exoscale_secret} \
+  --exoscale-zone-id 4da1b188-dcd6-4ff5-b7fd-bde984055548 \
+  --instance-pool-id ${exoscale_instancepool_id}
+
+#Run Grafana
+docker run \
+  -d \
+  -p 3000:3000 \
+  -v /srv/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml \
+  -v /srv/scale-up.yml:/etc/grafana/provisioning/notifiers/scale-up.yml \
+  -v /srv/scale-down.yml:/etc/grafana/provisioning/notifiers/scale-down.yml \
+  -v /srv/dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yml \
+  -v /srv/dashboard.json:/etc/grafana/dashboards/dashboard.json \
+  --name grafana \
+  --net=monitoring \
+  --restart=always \
+  grafana/grafana
