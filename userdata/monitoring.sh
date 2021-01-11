@@ -55,6 +55,7 @@ docker run \
   -v /srv/prometheus.yml:/etc/prometheus/prometheus.yml \
   --name prometheus \
   --net=monitoring \
+  --restart=always \
   prom/prometheus
 
 # Run the service discovery 
@@ -68,6 +69,7 @@ docker run \
   -v ${config_directory}:${config_directory} \
   --name service-discovery \
   --net=monitoring \
+  --restart=always \
   jschu/exoscale_service_discovery
 
 # create datasource for grafana on instance
@@ -309,4 +311,15 @@ docker run \
   -v /srv/dashboard.json:/etc/grafana/dashboards/dashboard.json \
   --name grafana \
   --net=monitoring \
+  --restart=always \
   grafana/grafana
+
+#Run Autoscaler
+docker run \
+  -d \
+  -p 8090:8090 \
+  --name grafana \
+  --net=monitoring \
+  --restart=always \
+  quay.io/janoszen/exoscale-grafana-autoscaler
+
