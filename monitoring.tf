@@ -14,6 +14,7 @@ resource "exoscale_compute" "monitoring" {
         exoscale_zone = var.zone,
         exoscale_instancepool_id = exoscale_instance_pool.instance_pool.id,
         target_port = "9100",
-        config_directory = "/srv/service-discovery"
+        config_directory = "/srv/service-discovery",
+        listen_port = "8090"
     })
 }

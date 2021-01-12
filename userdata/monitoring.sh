@@ -465,7 +465,7 @@ echo """
 #Run Autoscaler
 docker run \
   -d \
-  -p 8090:8090 \
+  -p ${listen_port}:${listen_port} \
   --name autoscaler \
   --net=monitoring \
   --restart=always \
