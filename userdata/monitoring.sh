@@ -95,7 +95,7 @@ notifiers:
     is_default: false
     send_reminder: true
     disable_resolve_message: true
-    frequency: '2m'
+    frequency: '5m'
     settings:
       autoResolve: true
       httpMethod: 'POST'
@@ -114,7 +114,7 @@ notifiers:
     is_default: false
     send_reminder: true
     disable_resolve_message: true
-    frequency: '2m'
+    frequency: '5m'
     settings:
       autoResolve: true
       httpMethod: 'POST'
@@ -174,7 +174,7 @@ echo """
             \"query\": {
               \"params\": [
                 \"A\",
-                \"5m\",
+                \"1m\",
                 \"now\"
               ]
             },
@@ -186,7 +186,7 @@ echo """
           }
         ],
         \"executionErrorState\": \"alerting\",
-        \"for\": \"5m\",
+        \"for\": \"1m\",
         \"frequency\": \"1m\",
         \"handler\": 1,
         \"name\": \"Scale down\",
@@ -244,7 +244,7 @@ echo """
       \"steppedLine\": false,
       \"targets\": [
         {
-          \"expr\": \"sum by (instance) (rate(node_cpu_seconds_total{mode!=\\\"idle\\\"}[1m])) / sum by (instance) (rate(node_cpu_seconds_total[1m]))\",
+          \"expr\": \"avg(sum by (instance) (rate(node_cpu_seconds_total{mode!=\\\"idle\\\"}[1m])) / sum by (instance) (rate(node_cpu_seconds_total[1m])))\",
           \"interval\": \"\",
           \"legendFormat\": \"\",
           \"queryType\": \"randomWalk\",
@@ -317,7 +317,7 @@ echo """
             \"query\": {
               \"params\": [
                 \"A\",
-                \"5m\",
+                \"1m\",
                 \"now\"
               ]
             },
@@ -329,7 +329,7 @@ echo """
           }
         ],
         \"executionErrorState\": \"alerting\",
-        \"for\": \"5m\",
+        \"for\": \"1m\",
         \"frequency\": \"1m\",
         \"handler\": 1,
         \"name\": \"Scale up\",
@@ -387,7 +387,7 @@ echo """
       \"steppedLine\": false,
       \"targets\": [
         {
-          \"expr\": \"sum by (instance) (rate(node_cpu_seconds_total{mode!=\\\"idle\\\"}[1m])) / sum by (instance) (rate(node_cpu_seconds_total[1m]))\",
+          \"expr\": \"avg(sum by (instance) (rate(node_cpu_seconds_total{mode!=\\\"idle\\\"}[1m])) / sum by (instance) (rate(node_cpu_seconds_total[1m])))\",
           \"interval\": \"\",
           \"legendFormat\": \"\",
           \"queryType\": \"randomWalk\",
