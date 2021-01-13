@@ -24,7 +24,7 @@ exoZone = exo.compute.get_zone(zone)
 
 def scaleInstances(additionalInstances):
     instancePool = exo.compute.get_instance_pool(id=poolId, zone=exoZone)
-    if((instancePool.size + additionalInstances) > 0)
+    if instancePool.size + additionalInstances > 0:
         instancePool.scale(ip.size + additionalInstances)
 
 class RequestHandler(BaseHTTPRequestHandler):
