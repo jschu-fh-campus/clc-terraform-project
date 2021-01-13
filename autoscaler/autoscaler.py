@@ -1,11 +1,10 @@
 import os
 import sys
-import time
 import signal
 import exoscale
 
-import SocketServer
-from BaseHTTPServer import BaseHTTPRequestHandler
+from flask import Flask, request
+app = Flask(__name__)
 
 def signalHandler(signum, frame):
     sys.exit(0)
@@ -25,16 +24,17 @@ exoZone = exo.compute.get_zone(zone)
 def scaleInstances(additionalInstances):
     instancePool = exo.compute.get_instance_pool(id=poolId, zone=exoZone)
     if instancePool.size + additionalInstances > 0:
-        instancePool.scale(ip.size + additionalInstances)
+        instancePool.scale(instancePool.size + additionalInstances)
 
-class RequestHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        if self.path == '/up':
-            scaleInstances(1)
-        if self.path == '/down':
-            scaleInstances(-1)
+@app.route('/up', methods = ['POST', 'GET'])
+def up():
+    scaleInstances(1)
+    return 'OK', 200
 
-        self.send_response(200)
+@app.route('/down', methods = ['POST', 'GET'])
+def down():
+    scaleInstances(-1)
+    return 'OK', 200
 
-httpd = SocketServer.TCPServer(("", int(listenPort)), RequestHandler)
-httpd.serve_forever()
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=int(listenPort))
