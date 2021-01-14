@@ -466,14 +466,15 @@ echo """
 docker run \
   -d \
   -p ${listen_port}:${listen_port} \
+  -e EXOSCALE_KEY=${exoscale_key} \
+  -e EXOSCALE_SECRET=${exoscale_secret} \
+  -e EXOSCALE_ZONE=${exoscale_zone} \
+  -e EXOSCALE_INSTANCEPOOL_ID=${exoscale_instancepool_id} \
+  -e LISTEN_PORT=${listen_port} \
   --name autoscaler \
   --net=monitoring \
   --restart=always \
-  quay.io/janoszen/exoscale-grafana-autoscaler \
-  --exoscale-api-key ${exoscale_key} \
-  --exoscale-api-secret ${exoscale_secret} \
-  --exoscale-zone-id 4da1b188-dcd6-4ff5-b7fd-bde984055548 \
-  --instance-pool-id ${exoscale_instancepool_id}
+  jschu/exoscale_autoscaler
 
 #Run Grafana
 docker run \
